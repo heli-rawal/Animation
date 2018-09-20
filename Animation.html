@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bridget Riley Patterns</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body style="background-color: #000">
+        <canvas id="sheet"></canvas>
+        <script src="webgazer.js" type="text/js"></script>
+        <script>
+            var canvas = document.getElementById("sheet");
+            var ctx = canvas.getContext("2d");
+            
+            canvas.width = window.innerWidth - 5;
+            canvas.height = window.innerHeight - 5;
+
+            ctx.canvas.width = canvas.width;
+            ctx.canvas.height = canvas.height;
+
+            function drawOuterCircle(x, y, r, color){
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2, false);
+                ctx.fillStyle = color;
+                ctx.fill();  
+            }
+
+            function drawInnerCircle(x, y, r, color){
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2, false);
+                ctx.fillStyle = color;
+                ctx.fill();  
+            }
+
+            function Circle(x, y, r, vX, vY) {
+                this.x = x;
+                this.y = y;
+                this.outerR = r;
+                this.innerR = r-30;
+                this.vX = vX;
+                this.vY = vY;
+
+                this.outerDraw = function(){
+                    drawOuterCircle(this.x, this.y, this.outerR, "#fff");
+                    drawOuterCircle(this.x, this.y, this.outerR-10, "#000");
+                    drawOuterCircle(this.x, this.y, this.outerR-20, "#fff");
+                    drawOuterCircle(this.x, this.y, this.outerR-30, "#000");
+                    drawOuterCircle(this.x, this.y, this.outerR-40, "#fff");
+                }
+
+                this.innerDraw = function(){
+                    drawInnerCircle(this.x + 30, this.y, this.innerR, "#fff");
+                    drawInnerCircle(this.x + 30, this.y, this.innerR-10, "#000");
+                    drawInnerCircle(this.x + 30, this.y, this.innerR-20, "#fff");
+                    drawInnerCircle(this.x + 30, this.y, this.innerR-30, "#000");
+                    drawInnerCircle(this.x + 30, this.y, this.innerR-40, "#fff");
+                    drawInnerCircle(this.x + 30, this.y, this.innerR-50, "#000");
+                }
+
+                this.update = function(){
+                    if(this.x + this.outerR  > canvas.width || this.x < 0){
+                        this.vX = -this.vX;
+                    }
+
+                    if(this.y + this.outerR > canvas.height || this.y < 0){
+                        this.vY = -this.vY;
+                    }
+
+                    this.x += this.vX;
+                    this.y += this.vY;
+
+                    this.outerDraw();
+                    this.innerDraw();
+                }
+            }
+
+            var circle = new Circle(x, y, outerRadius, vX, vY);
+
+            var circleArray = [];
+            for(var i=0; i<5; i++){
+                var x = Math.random() * canvas.width;
+                var y = Math.random() * canvas.height;
+                var vX = 7;
+                var vY = 7;
+                var outerRadius = 90;
+
+                circleArray.push(new Circle(x, y, outerRadius, vX, vY));
+            }
+
+            function animate(){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                requestAnimationFrame(animate);
+
+
+                for (var i=0; i<circleArray.length; i++){
+                    circleArray[i].update();
+                }
+            }
+
+            animate();
+
+        </script>
+    </body>
+</html>
